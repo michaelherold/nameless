@@ -11,6 +11,7 @@ ENV['RACK_ENV'] = 'test'
 require 'bundler/setup'
 require 'nameless'
 require 'pry'
+require 'rack/test'
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
@@ -29,6 +30,8 @@ RSpec.configure do |config|
   config.run_all_when_everything_filtered = true
 
   config.profile_examples = 10 if ENV['PROFILE']
+
+  config.include Rack::Test::Methods, type: :integration
 
   config.order = :random
   Kernel.srand config.seed

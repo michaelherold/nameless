@@ -19,5 +19,8 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'dotenv', '~> 2.4'
   spec.add_dependency 'dry-configurable', '~> 0.7'
+  spec.add_dependency 'dry-validation', '~> 0.12'
+  spec.add_dependency 'roda', '~> 3.8'
+
   spec.add_development_dependency 'bundler', '~> 1.16'
 end
