@@ -1,0 +1,12 @@
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*_spec.rb'
+
+Metrics/LineLength:
+  Max: 100
+  Exclude:
+    - 'spec/**/*_spec.rb'
+
+# This is tracked in different ways, so don't do it through Rubocop
+Style/Documentation:
+  Enabled: false

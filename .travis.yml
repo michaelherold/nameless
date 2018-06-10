@@ -1,0 +1,9 @@
+cache: bundler
+language: ruby
+sudo: false
+
+rvm:
+  - 2.5.1
+
+before_install: gem install bundler -v 1.16.1
+bundler_args: --without development
