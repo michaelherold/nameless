@@ -17,5 +17,7 @@ Gem::Specification.new do |spec|
   spec.files += Dir['lib/**/*.rb']
   spec.require_paths = %w[lib]
 
+  spec.add_dependency 'dotenv', '~> 2.4'
+  spec.add_dependency 'dry-configurable', '~> 0.7'
   spec.add_development_dependency 'bundler', '~> 1.16'
 end
