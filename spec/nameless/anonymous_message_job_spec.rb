@@ -18,7 +18,7 @@ RSpec.describe Nameless::AnonymousMessageJob do
       before { stub_failure }
 
       it 'tries up to five times' do
-        expect { described_class.new.perform(message) }.to raise_error(Nameless::AnonymousMessageJob::UnableToPostMessage, 'Testing')
+        expect { described_class.new.perform(message) }.to raise_error(Nameless::AnonymousMessageJob::ClientError, 'Bad token')
 
         expect(a_slack_request).to have_been_made.once
       end

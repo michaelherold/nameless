@@ -11,6 +11,9 @@ module Nameless
     extend Forwardable
     include SuckerPunch::Job
 
+    # Raised when we have an error in our posting
+    ClientError = Class.new(StandardError)
+
     # Raised when the job cannot post a message after several tries
     UnableToPostMessage = Class.new(StandardError)
 
@@ -32,31 +35,18 @@ module Nameless
         .timeout(:global, connect: 5, read: 10, write: 2)
         .post(url, json: message.to_h)
 
-      raise_error(message) unless response.body.to_s == 'ok'
+      raise ClientError, response.body.to_s unless response.body.to_s == 'ok'
     rescue HTTP::TimeoutError
       tries -= 1
-      raise_error(message) if tries.zero?
+      raise UnableToPostMessage, message.to_s if tries.zero?
       retry
     end
-
-    private
 
     # The URL to which we are sending the message
     #
     # @api private
     #
     # @return [URI]
-    def_delegator :Nameless, :url
-
-    # Raises an unable to post error
-    #
-    # @api private
-    #
-    # @param message [AnonymousMessage]
-    # @return [void]
-    # @raise [UnableToPostMessage]
-    def raise_error(message)
-      raise UnableToPostMessage, message.to_s
-    end
+    private def_delegator :Nameless, :url # rubocop:disable Style/AccessModifierDeclarations
   end
 end
