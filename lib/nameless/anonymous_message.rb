@@ -11,7 +11,7 @@ module Nameless
     Schema = Dry::Validation.Params do
       required(:text).filled
 
-      optional(:channel).filled
+      optional(:channel_name).filled
     end
 
     # Create an anonymous message from the params to the webhook
@@ -45,10 +45,10 @@ module Nameless
     # @api private
     #
     # @param text [String] the body of the message
-    # @param channel [String] the channel to post the message to, if any
-    def initialize(text:, channel: nil)
+    # @param channel_name [String] the channel to post the message to, if any
+    def initialize(text:, channel_name: nil)
       self.text = text
-      self.channel = channel
+      self.channel = channel_name
     end
 
     # The channel in which the message should appear, if any
@@ -56,7 +56,7 @@ module Nameless
     # @api public
     #
     # @example Fetch the channel for the message
-    #   message = Nameless::AnonymousMessage.from_params(text: 'Test message', channel: 'general')
+    #   message = Nameless::AnonymousMessage.from_params(text: 'Test message', channel_name: 'general')
     #   message.channel  #=> '#general'
     #
     # @return [String, nil]
