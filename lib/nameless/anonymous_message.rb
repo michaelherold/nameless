@@ -2,12 +2,16 @@
 
 require 'dry-validation'
 
+require_relative 'anonymous_message_job'
+
 module Nameless
   # An anonymous message to post within Slack
   class AnonymousMessage
     # The schema for parsing a message from the Slack webhook
     Schema = Dry::Validation.Params do
       required(:text).filled
+
+      optional(:channel).filled
     end
 
     # Create an anonymous message from the params to the webhook
@@ -41,22 +45,22 @@ module Nameless
     # @api private
     #
     # @param text [String] the body of the message
-    def initialize(text:)
+    # @param channel [String] the channel to post the message to, if any
+    def initialize(text:, channel: nil)
       self.text = text
+      self.channel = channel
     end
 
-    # Queues the message for sending in the background
+    # The channel in which the message should appear, if any
     #
     # @api public
     #
-    # @example Send a new anonymous message
-    #   message = Nameless::AnonymousMessage.from_params(text: 'Test message')
-    #   message.queue
+    # @example Fetch the channel for the message
+    #   message = Nameless::AnonymousMessage.from_params(text: 'Test message', channel: 'general')
+    #   message.channel  #=> '#general'
     #
-    # @return [void]
-    def queue
-      nil
-    end
+    # @return [String, nil]
+    attr_reader :channel
 
     # The body of the message
     #
@@ -69,6 +73,43 @@ module Nameless
     # @return [String]
     attr_reader :text
 
+    # Queues the message for sending in the background
+    #
+    # @api public
+    #
+    # @example Send a new anonymous message
+    #   message = Nameless::AnonymousMessage.from_params(text: 'Test message')
+    #   message.queue
+    #
+    # @return [void]
+    def queue
+      AnonymousMessageJob.perform_async(self)
+    end
+
+    # Converts the message into a Hash that is used with the Slack API
+    #
+    # @api private
+    #
+    # @return [Hash]
+    def to_h
+      {}.tap do |body|
+        body[:text] = text if text
+        body[:channel] = channel if channel
+      end
+    end
+
+    # Converts the message into a String for nice error reporting
+    #
+    # @api private
+    #
+    # @return [String]
+    def to_s
+      []
+        .tap { |parts| parts << "#{channel}:" if channel }
+        .tap { |parts| parts << text if text }
+        .join(' ')
+    end
+
     private
 
     # Sets the text of the message
@@ -77,6 +118,15 @@ module Nameless
     #
     # @return [String]
     attr_writer :text
+
+    # Sets the channel for the message
+    #
+    # @api private
+    # @return [String, nil]
+    def channel=(value)
+      value = "##{value}" if value && !value.start_with?('#')
+      @channel = value
+    end
 
     # A null object for handling invalid messages
     #

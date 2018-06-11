@@ -12,6 +12,13 @@ require 'bundler/setup'
 require 'nameless'
 require 'pry'
 require 'rack/test'
+require 'sucker_punch/testing/inline'
+
+Dir[Pathname.new(File.expand_path('support', __dir__)) / '**' / '*.rb'].each do |support_file|
+  require support_file
+end
+
+Nameless.configure_from_environment
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|

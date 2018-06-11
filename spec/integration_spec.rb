@@ -12,10 +12,13 @@ RSpec.describe 'the Nameless application', type: :integration do
     let(:token) { Nameless.token }
 
     it 'accepts the message and posts' do
+      stub_success
+
       post '/webhook', params
 
       expect(last_response).to be_ok
       expect(last_response.body).to be_empty
+      expect(a_request(:post, 'https://example.com/webhook')).to have_been_made
     end
 
     context 'that is missing its text' do
@@ -26,6 +29,7 @@ RSpec.describe 'the Nameless application', type: :integration do
 
         expect(last_response).to be_ok
         expect(last_response.body).to be_empty
+        expect(a_request(:post, 'https://example.com/webhook')).not_to have_been_made
       end
     end
   end
@@ -38,6 +42,7 @@ RSpec.describe 'the Nameless application', type: :integration do
 
       expect(last_response).to be_unauthorized
       expect(last_response.body).to be_empty
+      expect(a_request(:post, 'https://example.com/webhook')).not_to have_been_made
     end
   end
 
@@ -48,5 +53,14 @@ RSpec.describe 'the Nameless application', type: :integration do
       text: text,
       token: token
     }
+  end
+
+  def stub_slack_post(status:, body:, headers: {})
+    stub_request(:post, 'https://example.com/webhook')
+      .to_return(status: status, body: body, headers: headers)
+  end
+
+  def stub_success
+    stub_slack_post(status: 200, body: 'ok')
   end
 end
