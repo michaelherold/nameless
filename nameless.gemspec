@@ -20,6 +20,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'dotenv', '~> 2.4'
   spec.add_dependency 'dry-configurable', '~> 0.7'
   spec.add_dependency 'dry-validation', '~> 0.12'
+  spec.add_dependency 'honeybadger', '~> 3.1'
   spec.add_dependency 'http', '~> 3.3'
   spec.add_dependency 'puma', '~> 3.11'
   spec.add_dependency 'roda', '~> 3.8'

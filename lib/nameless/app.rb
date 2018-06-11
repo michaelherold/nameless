@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'honeybadger'
 require 'roda'
 
 require_relative 'anonymous_message'
@@ -13,6 +14,7 @@ module Nameless
     plugin :symbol_status
 
     use Rack::CommonLogger, Nameless.logger
+    use Honeybadger::Rack::ErrorNotifier
 
     route do |route|
       route.is 'webhook' do
