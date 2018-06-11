@@ -9,9 +9,21 @@ module Nameless
   class AnonymousMessage
     # The schema for parsing a message from the Slack webhook
     Schema = Dry::Validation.Params do
+      configure do
+        config.messages_file = File.expand_path('../../config/errors.yml', __dir__)
+      end
+
       required(:text).filled
 
       optional(:channel_name).filled
+
+      rule(not_a_direct_message: %i[channel_name]) do |channel_name|
+        channel_name.filled? > channel_name.not_eql?('directmessage')
+      end
+
+      rule(not_a_private_group: %i[channel_name]) do |channel_name|
+        channel_name.filled? > channel_name.not_eql?('privategroup')
+      end
     end
 
     # Create an anonymous message from the params to the webhook
@@ -36,7 +48,7 @@ module Nameless
       if result.success?
         new(result.output)
       else
-        Null.new
+        Null.new(result.messages)
       end
     end
 
@@ -56,8 +68,8 @@ module Nameless
     # @api public
     #
     # @example Fetch the channel for the message
-    #   message = Nameless::AnonymousMessage.from_params(text: 'Test message', channel_name: 'general')
-    #   message.channel  #=> '#general'
+    #   message = Nameless::AnonymousMessage.from_params(text: 'Test message', channel_name: 'foo')
+    #   message.channel  #=> '#foo'
     #
     # @return [String, nil]
     attr_reader :channel
@@ -135,7 +147,18 @@ module Nameless
       # Instantiates a new null message
       #
       # @api private
-      def initialize(*); end
+      #
+      # @param messages [Hash<Symbol, Array<String>>] the validation messages for errors
+      def initialize(messages)
+        self.errors = messages.values.flatten
+      end
+
+      # The errors that occurred when trying to create the message
+      #
+      # @api private
+      #
+      # @return [Array<String>]
+      attr_reader :errors
 
       # Responds to the queue message but does nothing
       #
@@ -143,6 +166,15 @@ module Nameless
       #
       # @return [void]
       def queue; end
+
+      private
+
+      # Sets the errors that occurred when trying to create the message
+      #
+      # @api private
+      #
+      # @return [Array<String>]
+      attr_writer :errors
     end
   end
 end

@@ -28,7 +28,11 @@ RSpec.describe 'the Nameless application', type: :integration do
         post '/webhook', params
 
         expect(last_response).to be_ok
-        expect(last_response.body).to be_empty
+
+        parsed_body = JSON.parse(last_response.body, symbolize_names: true)
+        expect(parsed_body).to include(response_type: 'ephemeral')
+        expect(parsed_body).to have_key(:text)
+        expect(parsed_body).to have_key(:attachments)
         expect(a_request(:post, 'https://example.com/webhook')).not_to have_been_made
       end
     end

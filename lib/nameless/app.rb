@@ -3,6 +3,7 @@
 require 'roda'
 
 require_relative 'anonymous_message'
+require_relative 'webhook_response'
 
 module Nameless
   # The web application for handling Slack slash commands
@@ -17,11 +18,12 @@ module Nameless
           if route.params['token'] == Nameless.token
             message = Nameless::AnonymousMessage.from_params(route.params)
             message.queue
+
+            Nameless::WebhookResponse.from(message)
           else
             response.status = :unauthorized
+            ''
           end
-
-          ''
         end
       end
     end
