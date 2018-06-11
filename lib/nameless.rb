@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
+require 'logger'
 require 'pathname'
 require 'uri'
 
 require 'dotenv'
 require 'dry-configurable'
 
-require_relative 'nameless/app'
 require_relative 'nameless/version'
 
 # A Slack slash command and incoming webhook for anonymously posting messages.
@@ -26,6 +26,13 @@ module Nameless
   #
   # @return [String] one of 'development', 'test', or 'production'
   setting :env, reader: true
+
+  # The logger for the application
+  #
+  # @api private
+  #
+  # @return [Logger] the logger that will be used for the application
+  setting :logger
 
   # The Slack outgoing token for authenticating requests
   #
@@ -83,6 +90,18 @@ module Nameless
     end
   end
 
+  # The logger for the application
+  #
+  # @api public
+  #
+  # @example Log a message for info purposes
+  #   Nameless.logger.info('This is a test')
+  #
+  # @return [Logger] the logger that will be used for the application
+  def self.logger
+    config.logger ||= Logger.new($stdout)
+  end
+
   # Resets the configuration to empty for testing purposes
   #
   # @api private
@@ -108,3 +127,8 @@ module Nameless
     end
   end
 end
+
+# Currently this is down here because order-dependence on Nameless.logger
+# If we switch to use containers, the ordering issue can go away, but that
+# is a significant refactor that I don't want to handle for now.
+require_relative 'nameless/app'

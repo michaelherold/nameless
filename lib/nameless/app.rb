@@ -12,6 +12,8 @@ module Nameless
     plugin :json
     plugin :symbol_status
 
+    use Rack::CommonLogger, Nameless.logger
+
     route do |route|
       route.is 'webhook' do
         route.post do

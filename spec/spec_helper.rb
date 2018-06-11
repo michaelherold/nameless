@@ -19,6 +19,7 @@ Dir[Pathname.new(File.expand_path('support', __dir__)) / '**' / '*.rb'].each do 
 end
 
 Nameless.configure_from_environment
+Nameless.config.logger = Logger.new(IO::NULL)
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
