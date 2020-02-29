@@ -23,7 +23,7 @@ group :development do
   group :test do
     gem 'pry'
     gem 'pry-byebug'
-    gem 'rake', '~> 10', require: false
+    gem 'rake', '~> 13', require: false
   end
 end
 
