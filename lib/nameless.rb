@@ -127,8 +127,3 @@ module Nameless
     end
   end
 end
-
-# Currently this is down here because order-dependence on Nameless.logger
-# If we switch to use containers, the ordering issue can go away, but that
-# is a significant refactor that I don't want to handle for now.
-require_relative 'nameless/app'
