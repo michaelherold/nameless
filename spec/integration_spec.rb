@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+Nameless.config.logger = Logger.new(IO::NULL)
+
+require 'nameless/app'
+
 RSpec.describe 'the Nameless application', type: :integration do
   # :reek:UtilityFunction
   def app

@@ -1,0 +1,39 @@
+{
+    "name": "Nameless",
+    "description": "A Slack webhook for posting anonymous questions",
+    "keywords": ["slack"],
+    "website": "https://github.com/michaelherold/nameless",
+    "repository": "https://github.com/michaelherold/nameless",
+    "env": {
+        "RACK_ENV": "production",
+        "SLACK_TOKEN": {
+            "description": "The slash command authentication token",
+            "value": ""
+        },
+        "SLACK_WEBHOOK_URL": {
+            "description": "The Incoming WebHook URL for posting",
+            "value": ""
+        }
+    },
+    "formation": {
+        "web": {
+            "quantity": 1,
+            "size": "free"
+        }
+    },
+    "addons": [
+        "papertrail"
+    ],
+    "buildpacks": [
+        {
+            "url": "heroku/ruby"
+        }
+    ],
+    "environments": {
+        "test": {
+            "scripts": {
+                "test": "env COVERAGE=1 bundle exec rspec"
+            }
+        }
+    }
+}
