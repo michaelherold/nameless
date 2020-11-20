@@ -14,7 +14,7 @@ require 'pry'
 require 'rack/test'
 require 'sucker_punch/testing/inline'
 
-Dir[Pathname.new(File.expand_path('support', __dir__)) / '**' / '*.rb'].each do |support_file|
+Dir[Pathname.new(File.expand_path('support', __dir__)) / '**' / '*.rb'].sort.each do |support_file|
   require support_file
 end
 

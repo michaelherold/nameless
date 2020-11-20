@@ -1,4 +1,7 @@
 en:
-  errors:
-    not_a_direct_message: 'You cannot post anonymously in a direct message'
-    not_a_private_group: 'You cannot post anonymously in a private group'
+  dry_validation:
+    errors:
+      rules:
+        channel_name:
+          not_a_direct_message: You cannot post anonymously in a direct message
+          not_a_private_group: You cannot post anonymously in a private group

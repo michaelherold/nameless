@@ -34,6 +34,6 @@ guard :rubocop do
 end
 
 guard 'yard' do
-  watch(%r{app\/.+\.rb})
-  watch(%r{lib\/.+\.rb})
+  watch(%r{app/.+\.rb})
+  watch(%r{lib/.+\.rb})
 end

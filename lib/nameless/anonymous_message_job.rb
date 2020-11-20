@@ -32,13 +32,14 @@ module Nameless
     def perform(message, tries = 5)
       response =
         HTTP
-        .timeout(:global, connect: 5, read: 10, write: 2)
+        .timeout(connect: 5, read: 10, write: 2)
         .post(url, json: message.to_h)
 
       raise ClientError, response.body.to_s unless response.body.to_s == 'ok'
     rescue HTTP::TimeoutError
       tries -= 1
       raise UnableToPostMessage, message.to_s if tries.zero?
+
       retry
     end
 
