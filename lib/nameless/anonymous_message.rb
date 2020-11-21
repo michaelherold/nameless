@@ -47,7 +47,7 @@ module Nameless
       result = Contract.new.call(params)
 
       if result.success?
-        new(result.to_h)
+        new(**result.to_h)
       else
         Null.new(result.errors.to_h)
       end

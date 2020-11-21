@@ -223,7 +223,7 @@ DEPENDENCIES
   yardstick
 
 RUBY VERSION
-   ruby 2.5.1p57
+   ruby 2.7.1p83
 
 BUNDLED WITH
    2.1.4
