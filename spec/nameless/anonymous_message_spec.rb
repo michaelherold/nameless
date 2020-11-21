@@ -1,21 +1,21 @@
 # frozen_string_literal: true
 
 RSpec.describe Nameless::AnonymousMessage do
-  describe 'Schema' do
-    subject { described_class::Schema }
+  describe 'Contract' do
+    subject { described_class::Contract.new }
 
     it 'has a disaffinity for direct messages' do
       result = subject.call('text' => 'This is a test', 'channel_name' => 'directmessage')
 
       expect(result).not_to be_a_success
-      expect(result.messages).to include(not_a_direct_message: ['You cannot post anonymously in a direct message'])
+      expect(result.errors.to_h).to include(channel_name: ['You cannot post anonymously in a direct message'])
     end
 
     it 'has a disaffinity for private groups' do
       result = subject.call('text' => 'This is a test', 'channel_name' => 'privategroup')
 
       expect(result).not_to be_a_success
-      expect(result.messages).to include(not_a_private_group: ['You cannot post anonymously in a private group'])
+      expect(result.errors.to_h).to include(channel_name: ['You cannot post anonymously in a private group'])
     end
   end
 

@@ -7,6 +7,8 @@ require 'uri'
 require 'dotenv'
 require 'dry-configurable'
 
+require_relative 'nameless/anonymous_message'
+require_relative 'nameless/anonymous_message_job'
 require_relative 'nameless/version'
 
 # A Slack slash command and incoming webhook for anonymously posting messages.

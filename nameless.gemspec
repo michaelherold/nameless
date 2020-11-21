@@ -18,13 +18,13 @@ Gem::Specification.new do |spec|
   spec.require_paths = %w[lib]
 
   spec.add_dependency 'dotenv', '~> 2.4'
-  spec.add_dependency 'dry-configurable', '~> 0.7'
-  spec.add_dependency 'dry-validation', '~> 0.12'
-  spec.add_dependency 'honeybadger', '~> 3.1'
-  spec.add_dependency 'http', '~> 3.3'
-  spec.add_dependency 'puma', '>= 3.11', '< 5.0'
+  spec.add_dependency 'dry-configurable', '~> 0.11'
+  spec.add_dependency 'dry-validation', '~> 1.5'
+  spec.add_dependency 'honeybadger', '~> 4.0'
+  spec.add_dependency 'http', '~> 4.0'
+  spec.add_dependency 'puma', '~> 5.0'
   spec.add_dependency 'roda', '~> 3.8'
   spec.add_dependency 'sucker_punch', '~> 2.0'
 
-  spec.add_development_dependency 'bundler', '~> 1.16'
+  spec.add_development_dependency 'bundler', '>= 1.16'
 end

@@ -8,21 +8,22 @@ module Nameless
   # An anonymous message to post within Slack
   class AnonymousMessage
     # The schema for parsing a message from the Slack webhook
-    Schema = Dry::Validation.Params do
-      configure do
-        config.messages_file = File.expand_path('../../config/errors.yml', __dir__)
+    class Contract < Dry::Validation::Contract
+      config.messages.default_locale = :en
+      config.messages.load_paths << File.expand_path('../../config/errors.yml', __dir__)
+
+      params do
+        required(:text).filled
+
+        optional(:channel_name).filled
       end
 
-      required(:text).filled
-
-      optional(:channel_name).filled
-
-      rule(not_a_direct_message: %i[channel_name]) do |channel_name|
-        channel_name.filled? > channel_name.not_eql?('directmessage')
+      rule(:channel_name) do
+        key.failure(:not_a_direct_message) if value && value == 'directmessage'
       end
 
-      rule(not_a_private_group: %i[channel_name]) do |channel_name|
-        channel_name.filled? > channel_name.not_eql?('privategroup')
+      rule(:channel_name) do |_channel_name|
+        key.failure(:not_a_private_group) if value && value == 'privategroup'
       end
     end
 
@@ -43,12 +44,12 @@ module Nameless
     #
     # @return [Nameless::AnonymousMessage]
     def self.from_params(params)
-      result = Schema.call(params)
+      result = Contract.new.call(params)
 
       if result.success?
-        new(result.output)
+        new(**result.to_h)
       else
-        Null.new(result.messages)
+        Null.new(result.errors.to_h)
       end
     end
 
@@ -151,6 +152,7 @@ module Nameless
       # @param messages [Hash<Symbol, Array<String>>] the validation messages for errors
       def initialize(messages)
         self.errors = messages.values.flatten
+        super(text: nil)
       end
 
       # The errors that occurred when trying to create the message
